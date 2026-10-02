@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cahier d'entraînement AAE 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FCFDFF; --bg:#EEF2F8; --rule:#DCE5F3; --ink:#14213D; --muted:#5B6478;
+  --pen:#2341A0; --pen-soft:#E4EAFB; --red:#C8372D; --red-soft:#FBE7E5; --ok:#2E7D4F; --ok-soft:#E3F3E9;
+  --line:#C9D3E3; --chip:#FFFFFF;
+  --sans:"Atkinson Hyperlegible", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --hand:"Caveat", "Segoe Print", "Comic Sans MS", cursive;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#151A24; --bg:#0E121A; --rule:#222B3A; --ink:#E6EAF2; --muted:#9AA4B8;
+    --pen:#93A9FF; --pen-soft:#1E2847; --red:#FF7F73; --red-soft:#3A1E1D; --ok:#74D19B; --ok-soft:#173226;
+    --line:#2C3647; --chip:#1B2130;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#151A24; --bg:#0E121A; --rule:#222B3A; --ink:#E6EAF2; --muted:#9AA4B8;
+  --pen:#93A9FF; --pen-soft:#1E2847; --red:#FF7F73; --red-soft:#3A1E1D; --ok:#74D19B; --ok-soft:#173226;
+  --line:#2C3647; --chip:#1B2130;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{height:100%; scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0; min-height:100%; background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:17px; line-height:1.5}
+button,select{font:inherit; color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--pen); outline-offset:2px}
+.wrap{max-width:1040px; margin:0 auto; padding:20px 16px 48px}
+header.top{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:18px}
+.brand h1{font-size:1.65rem; line-height:1.15; margin:0; letter-spacing:-0.01em}
+.brand p{margin:4px 0 0; color:var(--muted); font-size:.95rem}
+.toplinks{display:flex; gap:8px; flex-wrap:wrap}
+.btn{border:1.5px solid var(--pen); background:transparent; color:var(--pen); border-radius:8px; padding:9px 16px; font-weight:700}
+.btn.solid{background:var(--pen); color:var(--paper)}
+.btn.ghost{border-color:var(--line); color:var(--ink)}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+
+/* Feuille de copie */
+.sheet{background:var(--paper); border:1px solid var(--line); border-radius:6px; position:relative;
+  background-image:repeating-linear-gradient(to bottom, transparent 0, transparent 31px, var(--rule) 31px, var(--rule) 32px);
+  background-position:0 14px; padding:22px 22px 26px 64px; min-height:420px}
+.sheet::before{content:""; position:absolute; left:44px; top:0; bottom:0; width:2px; background:var(--red); opacity:.55}
+@media (max-width:640px){ .sheet{padding:18px 14px 22px 34px} .sheet::before{left:20px} }
+
+/* Sommaire */
+.toc{list-style:none; margin:0; padding:0}
+.toc li{border-bottom:1px solid var(--rule)}
+.toc button{width:100%; display:grid; grid-template-columns:1fr auto; gap:6px 16px; align-items:center; text-align:left; background:none; border:0; padding:14px 4px}
+.toc button:hover .tt{color:var(--pen)}
+.toc .tt{font-weight:700; font-size:1.05rem}
+.toc .dd{grid-column:1; color:var(--muted); font-size:.92rem}
+.toc .sc{grid-row:1 / span 2; grid-column:2; font-family:var(--hand); font-size:1.6rem; color:var(--red); min-width:70px; text-align:right}
+.toc .sc.none{font-family:var(--sans); font-size:.85rem; color:var(--muted)}
+.intro{margin:0 0 10px; color:var(--muted)}
+
+/* Exercice */
+.bar{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap}
+.crumb{color:var(--muted); font-size:.92rem}
+.progress{flex:1; min-width:120px; max-width:260px; height:6px; background:var(--rule); border-radius:3px; overflow:hidden}
+.progress span{display:block; height:100%; background:var(--pen); transition:width .3s}
+.kind{display:inline-block; font-size:.82rem; color:var(--pen); border:1px solid var(--pen); border-radius:999px; padding:1px 10px; margin-bottom:8px}
+.q{font-size:1.12rem; font-weight:700; margin:0 0 14px; max-width:68ch}
+.opts{display:grid; gap:8px; max-width:720px}
+.opt{text-align:left; background:var(--chip); border:1.5px solid var(--line); border-radius:8px; padding:10px 14px}
+.opt:hover{border-color:var(--pen)}
+.opt.sel{border-color:var(--pen); background:var(--pen-soft)}
+.opt.good{border-color:var(--ok); background:var(--ok-soft)}
+.opt.bad{border-color:var(--red); background:var(--red-soft)}
+.actions{display:flex; gap:10px; margin-top:18px; flex-wrap:wrap; align-items:center}
+.note{font-family:var(--hand); color:var(--red); font-size:1.7rem; line-height:1.1; margin-top:14px}
+.note.ok{color:var(--ok)}
+.expl{margin-top:6px; max-width:70ch; color:var(--ink); font-size:.98rem}
+.expl b{color:var(--pen)}
+
+/* Ordonner */
+.order{list-style:none; padding:0; margin:0; display:grid; gap:7px; max-width:720px}
+.order li{display:grid; grid-template-columns:30px 1fr auto; align-items:center; gap:10px; background:var(--chip); border:1.5px solid var(--line); border-radius:8px; padding:7px 8px 7px 12px}
+.order li .n{font-weight:700; color:var(--muted)}
+.order li.good{border-color:var(--ok); background:var(--ok-soft)}
+.order li.bad{border-color:var(--red); background:var(--red-soft)}
+.mv{display:flex; gap:4px}
+.mv button{width:38px; height:34px; border:1px solid var(--line); background:var(--paper); border-radius:6px}
+.mv button:hover{border-color:var(--pen); color:var(--pen)}
+.order li .fix{grid-column:2 / span 2; font-size:.85rem; color:var(--red)}
+
+/* Relier */
+.match{display:grid; grid-template-columns:1fr 1fr; gap:10px 18px; max-width:860px}
+.col{display:grid; gap:7px; align-content:start}
+.mi{text-align:left; background:var(--chip); border:1.5px solid var(--line); border-radius:8px; padding:9px 12px; position:relative}
+.mi.active{border-color:var(--pen); box-shadow:0 0 0 3px var(--pen-soft)}
+.mi .tag{display:inline-block; min-width:22px; height:22px; line-height:22px; text-align:center; border-radius:50%; font-size:.8rem; font-weight:700; margin-right:8px; background:var(--rule); color:var(--muted)}
+.mi.paired .tag{background:var(--pen); color:var(--paper)}
+.mi.good{border-color:var(--ok); background:var(--ok-soft)}
+.mi.bad{border-color:var(--red); background:var(--red-soft)}
+.hint{color:var(--muted); font-size:.9rem; margin:-6px 0 12px}
+@media (max-width:640px){ .match{grid-template-columns:1fr} }
+
+/* Trous */
+.gap{max-width:72ch; line-height:2.3; font-size:1.05rem}
+.gap select{border:0; border-bottom:2px solid var(--pen); background:var(--pen-soft); color:var(--pen); font-weight:700; border-radius:4px 4px 0 0; padding:2px 6px; max-width:100%}
+.gap select.good{border-color:var(--ok); background:var(--ok-soft); color:var(--ok)}
+.gap select.bad{border-color:var(--red); background:var(--red-soft); color:var(--red)}
+.gap .corr{font-family:var(--hand); color:var(--red); font-size:1.35rem; margin:0 4px}
+
+/* Classer */
+.cls{display:grid; gap:8px; max-width:820px}
+.ci{display:grid; grid-template-columns:1fr minmax(170px, 40%); gap:10px; align-items:center; background:var(--chip); border:1.5px solid var(--line); border-radius:8px; padding:8px 10px 8px 12px}
+.ci select{width:100%; border:1.5px solid var(--line); border-radius:6px; padding:6px 8px; background:var(--paper)}
+.ci.good{border-color:var(--ok); background:var(--ok-soft)}
+.ci.bad{border-color:var(--red); background:var(--red-soft)}
+.ci .fix{grid-column:1 / -1; font-size:.85rem; color:var(--red)}
+@media (max-width:640px){ .ci{grid-template-columns:1fr} }
+
+/* Vrai / faux */
+.vf{display:flex; gap:10px}
+.vf .opt{min-width:110px; text-align:center; font-weight:700}
+
+/* Bilan */
+.score{font-family:var(--hand); font-size:4.2rem; color:var(--red); line-height:1; margin:10px 0 4px}
+.review{margin-top:16px; padding:0; list-style:none; max-width:760px}
+.review li{padding:8px 0; border-bottom:1px solid var(--rule); display:grid; grid-template-columns:28px 1fr; gap:8px}
+.review .m{font-family:var(--hand); font-size:1.4rem; line-height:1}
+.review .m.ok{color:var(--ok)} .review .m.ko{color:var(--red)}
+.foot{color:var(--muted); font-size:.85rem; margin-top:14px}
+@media (prefers-reduced-motion: reduce){ *{transition:none !important} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>Cahier d'entraînement AAE 2027</h1>
+      <p>Concours interne d'attaché d'administration de l'État, Éducation nationale et Enseignement supérieur</p>
+    </div>
+    <nav class="toplinks">
+      <button class="btn ghost" id="homeBtn" type="button">Sommaire</button>
+      <button class="btn" id="mixBtn" type="button">Révision mélangée (15 questions)</button>
+    </nav>
+  </header>
+  <main class="sheet" id="app" aria-live="polite"></main>
+  <p class="foot">Vos meilleurs scores restent enregistrés dans ce navigateur. Contenus tirés des rapports de jury 2024-2026, des sujets et des meilleures copies, à jour au 1er octobre 2026.</p>
+</div>
+
+<script>
+/* ===================== CONTENU ===================== */
+const MODULES = [
+{ id:"annexes", title:"Gabarits d'annexes", desc:"Remettre les éléments dans l'ordre, choisir la bonne annexe, éviter les erreurs de forme.",
+  ex:[
+  {t:"order", q:"Remettez dans l'ordre les éléments d'un courrier administratif (gabarit D).",
+   items:["Logo et bloc du service émetteur (affaire suivie par, téléphone, courriel)","Lieu et date","Vedette : « Le recteur de la région académique XXX à ... »","Objet, références, pièces jointes","§1 Contexte : le dispositif, sa date, son but","§2 Conséquences concrètes pour le destinataire","§3 Suite proposée (réunion, contact)","Formule de politesse","Signature par la fonction"],
+   e:"La vedette (qui écrit à qui) précède l'objet. Le corps tient en trois paragraphes : contexte, conséquences, suite."},
+  {t:"order", q:"Remettez dans l'ordre les éléments d'un communiqué de presse (gabarit B).",
+   items:["Logo, lieu et date","Mention « COMMUNIQUÉ DE PRESSE »","Titre : verbe d'action + dispositif + territoire","Chapô : qui, quoi, quand, où, pourquoi","Paragraphe de contexte","Mesures concrètes dans le territoire","Citation de l'autorité (par sa fonction)","Encadré des chiffres clés","Partenaires","Contact presse"],
+   e:"Le chapô doit se suffire à lui-même : un journaliste qui ne lit que lui doit avoir l'information."},
+  {t:"order", q:"Remettez dans l'ordre les séquences d'un ordre du jour de réunion (gabarit E).",
+   items:["Accueil, émargement","Ouverture : enjeux nationaux et académiques","Présentation du dispositif et du calendrier","Ateliers : déclinaison par bassin ou par public","Restitution et questions","Relevé de décisions et prochaine échéance"],
+   e:"Une réunion sans relevé de décisions ni date de suivi n'est pas opérationnelle aux yeux du jury."},
+  {t:"order", q:"Remettez dans l'ordre chronologique les étapes d'un rétroplanning type sur une année scolaire (gabarit F).",
+   items:["Diagnostic et réunion de lancement (septembre)","Comité de pilotage et convention avec les partenaires","Formation des personnels","Adoption en conseil d'administration (1er trimestre)","Mise en œuvre dans les établissements","Bilan intermédiaire (dialogue de gestion)","Bilan annuel et ajustements pour la rentrée suivante"],
+   e:"Le rétroplanning part de l'échéance finale et fait apparaître les jalons institutionnels : CA, CSA, conseils de classe, rentrée."},
+  {t:"order", q:"Cartographie des acteurs (gabarit C) : remettez les échelons de la chaîne Éducation nationale du plus haut au plus proche du terrain.",
+   items:["Échelon national (ministère, DGESCO, DGESIP)","Région académique (recteur de région académique, DRAIO, DRAFPIC)","Académie (recteur, secrétaire général, inspecteurs)","Département (IA-DASEN, DSDEN, CIO)","Établissements (chef d'établissement, équipes)"],
+   e:"Dans la cartographie, la chaîne de pilotage est au centre et les partenaires (Région, supérieur, collectivités, monde économique, familles) sur le côté, reliés en pointillés."},
+  {t:"match", q:"Reliez chaque annexe à ce qui lui rapporte des points.",
+   pairs:[["Fiche d'actions prioritaires","Hiérarchiser, dater, nommer un pilote, ajouter un indicateur"],["Communiqué de presse","Chapô qui répond à qui, quoi, quand, où, pourquoi ; citation ; contact presse"],["Cartographie des acteurs","Organisation par échelons, distinction pilotage et partenariat"],["Courrier","Vedette, objet, références, formule adaptée au destinataire"],["Ordre du jour","Objectif en une phrase, livrable, relevé de décisions"],["Rétroplanning","Partir de l'échéance, faire apparaître les jalons institutionnels"]],
+   e:"Chaque gabarit a ses points « faciles » : ils se prennent sans réfléchir si le gabarit est automatisé."},
+  {t:"qcm", q:"Quelle annexe a été choisie par les 7 meilleures copies publiées en 2025 et 2026 ?",
+   o:["Le courrier","La cartographie des acteurs","L'ordre du jour","Le rétroplanning"], a:1,
+   e:"La cartographie revient dans les quatre propositions d'annexes de 2024 à 2026. Elle se prépare entièrement à l'avance."},
+  {t:"qcm", q:"Combien de temps prévoir pour chaque annexe ?",
+   o:["5 minutes","10 minutes","20 minutes","45 minutes"], a:2, e:"40 minutes pour les deux annexes, de 12 h 05 à 12 h 45 dans le minutage conseillé."},
+  {t:"qcm", q:"Quelle erreur de forme a été relevée dans le courrier d'une meilleure copie 2026 ?",
+   o:["Absence de date","Courrier intitulé « Note à l'attention des représentants des parents d'élèves »","Absence d'objet","Signature manuscrite"], a:1,
+   e:"Un courrier n'est pas une note. Il s'ouvre par une vedette et se termine par une formule de politesse."},
+  {t:"gap", q:"Complétez les règles communes aux annexes.",
+   text:"Une annexe tient sur {{une|deux|trois}} page. Elle illustre une proposition de la {{partie 2|partie 1|introduction}} et doit être citée dans la note sous la forme « (cf. {{annexe 2|document 2|référence 2}}) ». Son titre reprend l'intitulé {{exact du sujet|choisi par le candidat|du document le plus long}}.",
+   e:"Le jury pénalise les annexes « juxtaposées, sans lien explicite avec la note »."},
+  {t:"qcm", q:"Quelle formule de politesse convient pour un courrier au président du conseil départemental ?",
+   o:["« Cordialement »","« Bien à vous »","« ... l'assurance de haute considération »","« Salutations sportives »"], a:2,
+   e:"« Haute considération » pour un élu ou un président de collectivité ; « salutations distinguées » pour des partenaires ou des familles."},
+  {t:"vf", q:"Le choix des annexes parmi les quatre proposées influe sur la note.", a:false,
+   e:"Faux. Le rapport 2026 précise que le choix n'a pas d'influence sur la note. Seuls comptent la qualité et le lien avec la partie 2."}
+  ]},
+
+{ id:"grille", title:"Grille à 7 rubriques et risques", desc:"Construire une proposition opérationnelle et associer chaque risque à sa parade.",
+  ex:[
+  {t:"order", q:"Remettez dans l'ordre les 7 rubriques de la grille d'une proposition opérationnelle.",
+   items:["Action","Acteurs","Calendrier","Moyens","Risque","Parade","Indicateur"],
+   e:"Une action sans calendrier ou sans acteur n'est pas « opérationnelle » au sens du jury."},
+  {t:"class", q:"Exemple du Plan Avenir : rangez chaque élément dans la bonne rubrique.",
+   cats:["Action","Acteurs","Calendrier","Moyens","Risque","Parade","Indicateur"],
+   items:[["Installer un comité de pilotage régional du Plan Avenir",0],["DRAIO, IA-DASEN, DRAFPIC, Région, universités",1],["Octobre, puis une réunion par trimestre",2],["Lettre de mission du recteur, tableau de bord partagé",3],["Pilotage dispersé, doublons entre l'État et la Région",4],["Feuille de route État-Région signée avant la fin de l'année",5],["Nombre de réunions tenues, feuille de route signée",6]],
+   e:"Cette ligne est la première de l'exemple rempli de la grille 1."},
+  {t:"gap", q:"Complétez la méthode d'entraînement recommandée par le jury 2026.",
+   text:"Identifier une politique publique déjà {{mise en œuvre|annoncée|abandonnée}}, lister les {{actions|textes|acteurs}} conduites, identifier pour chaque action un {{risque|indicateur|budget}}, préciser la manière dont il peut être {{anticipé ou limité|ignoré|transféré}}, puis rédiger {{un ou deux|cinq|dix}} paragraphes présentant une analyse de ces éléments.",
+   e:"C'est la grille 2. Durée : 15 minutes pour 3 actions, 30 minutes pour 6."},
+  {t:"match", q:"Reliez chaque famille de risque à sa parade type.",
+   pairs:[["Gouvernance, adhésion","Comité de pilotage, concertation en amont, lettre de mission"],["Moyens humains","Formation EAFC, temps banalisé, référents"],["Moyens financiers","Convention pluriannuelle, cofinancement, mutualisation"],["Calendrier","Rétroplanning, phasage, expérimentation avant généralisation"],["Équité territoriale","Ciblage, transport, numérique, campus connectés"],["Communication, acceptabilité","Information précoce, dialogue social, messages simples"],["Juridique, données","Appui du délégué à la protection des données, registre des traitements"]],
+   e:"Classer les risques par famille évite d'en oublier une et donne une structure à la sous-partie « risques »."},
+  {t:"class", q:"Rangez chaque risque dans sa famille.",
+   cats:["Gouvernance","Moyens humains","Moyens financiers","Calendrier","Équité territoriale","Communication","Juridique, données"],
+   items:[["Résistance des équipes, portage politique faible",0],["Surcharge des personnels, turn-over",1],["Crédits non pérennes au-delà d'un an",2],["Télescopage avec la période des examens",3],["Établissements ruraux pénalisés",4],["Incompréhension des familles, contestation syndicale",5],["Données d'élèves partagées sans base légale",6]],
+   e:"La copie 2025 n° 475795 classait ses risques en trois familles : gouvernance, territoire, moyens."},
+  {t:"class", q:"Check-list des acteurs : rangez chaque acteur dans sa catégorie.",
+   cats:["Éducation nationale interne","Collectivités","Enseignement supérieur","Partenaires"],
+   items:[["IA-DASEN",0],["EAFC",0],["PsyEN",0],["Région",1],["Département",1],["Communes et EPCI",1],["Universités et INSPÉ",2],["Crous",2],["Entreprises et branches",3],["CAF, missions locales",3]],
+   e:"Le jury signale que la Région et l'enseignement supérieur sont très souvent absents des copies."},
+  {t:"qcm", q:"Combien d'actions viser dans la grille 1 pour la partie 2 ?",
+   o:["1 ou 2","5 à 8","15 à 20","Autant que de mesures dans la note de service"], a:1,
+   e:"5 à 8 actions, regroupées ensuite par axe : gouvernance, ressources humaines, moyens, communication, suivi."},
+  {t:"qcm", q:"Selon le jury, quels acteurs sont « très souvent absents des copies » ?",
+   o:["Les chefs d'établissement et les enseignants","Les régions et l'enseignement supérieur","Le ministre et la DGESCO","Les familles et les élèves"], a:1,
+   e:"En 2026, le dossier contenait pourtant un communiqué de Régions de France et un document sur les campus connectés."},
+  {t:"vf", q:"La grille à 7 rubriques peut être recopiée telle quelle dans la copie, sous forme de tableau télégraphique.", a:false,
+   e:"Faux. Le style télégraphique est proscrit. La grille reste au brouillon ; chaque ligne devient 3 ou 4 phrases complètes."},
+  {t:"qcm", q:"Réforme des lycées professionnels (sujet 2024) : quelle est la parade centrale au risque d'un nombre insuffisant d'entreprises d'accueil pour les stages ?",
+   o:["Le bureau des entreprises implanté dans chaque lycée","La suppression des périodes en entreprise","Un appel national aux entreprises","L'allongement de l'année scolaire"], a:0,
+   e:"Le bureau des entreprises, articulé avec les branches et la Région, est la réponse prévue par la réforme (circulaire du 24 mai 2023)."}
+  ]},
+
+{ id:"orga", title:"Organisation territoriale", desc:"Échelons, sigles, compétences des collectivités, exemple des Hauts-de-France.",
+  ex:[
+  {t:"order", q:"Remettez les échelons de l'Éducation nationale dans l'ordre, du national au terrain.",
+   items:["National (ministères, administration centrale)","Région académique","Académie (rectorat)","Département (DSDEN)","Circonscription du premier degré","École ou EPLE"],
+   e:"Chaque échelon a un vis-à-vis dans les collectivités : Région, Département, commune."},
+  {t:"match", q:"Reliez chaque collectivité au type d'établissement dont elle a la charge.",
+   pairs:[["Commune ou EPCI","Écoles (bâtiments, ATSEM, périscolaire)"],["Département","Collèges (bâtiments, agents, restauration)"],["Région","Lycées (bâtiments, agents), orientation, formation professionnelle, transport"]],
+   e:"L'État fixe les programmes, recrute et paie les personnels ; les collectivités construisent et entretiennent les bâtiments."},
+  {t:"qcm", q:"Combien y a-t-il de régions académiques et d'académies ?",
+   o:["13 régions académiques, 26 académies","18 régions académiques, 30 académies","18 régions académiques, 18 académies","30 régions académiques, 101 académies"], a:1,
+   e:"18 régions académiques (13 en métropole, 5 en outre-mer) et 30 académies ; Nouvelle-Calédonie, Polynésie et Wallis-et-Futuna relèvent de vice-rectorats."},
+  {t:"gap", q:"Complétez la présentation des Hauts-de-France.",
+   text:"La région académique Hauts-de-France compte {{deux|trois|une}} académies. L'académie de Lille couvre {{le Nord et le Pas-de-Calais|l'Aisne, l'Oise et la Somme|le Nord et la Somme}}, celle d'Amiens {{l'Aisne, l'Oise et la Somme|le Nord et le Pas-de-Calais|la Somme seule}}. Le recteur de région académique est le recteur de l'académie de {{Lille|Amiens|Paris}}.",
+   e:"Cinq DSDEN au total : 59 et 62 pour Lille ; 02, 60 et 80 pour Amiens."},
+  {t:"match", q:"Reliez chaque sigle à sa signification.",
+   pairs:[["DRAIO","Délégation régionale académique à l'information et à l'orientation"],["DRAFPIC","Délégation régionale académique à la formation professionnelle initiale et continue"],["DRANE","Délégation régionale académique au numérique pour l'éducation"],["DRAJES","Délégation régionale académique à la jeunesse, à l'engagement et aux sports"],["EAFC","École académique de la formation continue"],["IA-DASEN","Inspecteur d'académie, directeur académique des services de l'éducation nationale"],["IEN-IO","Inspecteur de l'éducation nationale chargé de l'information et de l'orientation"]],
+   e:"Les délégations régionales académiques sont nées de la réforme territoriale entrée en vigueur le 1er janvier 2020."},
+  {t:"qcm", q:"Qui est chancelier des universités ?",
+   o:["Le président de Région","Le recteur d'académie","Le président d'université","Le préfet"], a:1,
+   e:"Le recteur, chancelier, exerce le contrôle de légalité et le contrôle budgétaire des universités."},
+  {t:"vf", q:"Le directeur d'école est un chef d'établissement, comme le principal de collège.", a:false,
+   e:"Faux. L'école n'a pas de personnalité juridique ; le directeur d'école n'est pas un chef d'établissement."},
+  {t:"qcm", q:"Depuis quand les régions académiques existent-elles dans leur forme actuelle ?",
+   o:["1er septembre 2015","1er janvier 2020","1er janvier 2023","Rentrée 2025"], a:1,
+   e:"Décret du 20 novembre 2019, entrée en vigueur le 1er janvier 2020 (sujet tombé en 2021)."},
+  {t:"class", q:"À quel échelon se traite chaque mission ?",
+   cats:["DSDEN","Rectorat","EPLE"],
+   items:[["Carte scolaire du premier degré",0],["Mouvement des professeurs des écoles",0],["Affectation des élèves en 6e",0],["Gestion des enseignants du second degré",1],["Organisation des examens et concours",1],["Offre de formation continue (EAFC)",1],["Vote du budget en conseil d'administration",2],["Adoption du règlement intérieur",2]],
+   e:"La DSDEN agit par délégation du recteur ; l'EPLE est un établissement public autonome."},
+  {t:"match", q:"Reliez chaque direction ou opérateur national à son rôle.",
+   pairs:[["DGESCO","Politique pédagogique des écoles, collèges et lycées"],["DGESIP","Enseignement supérieur, Parcoursup, vie étudiante"],["DGRH","Recrutement, carrière, rémunération ; organise le concours AAE"],["DEPP","Statistiques, évaluations, projections d'effectifs"],["DNE","Numérique pour l'éducation"],["ONISEP","Information sur l'orientation, plateforme Avenir(s)"]],
+   e:"Le département DGRH D2-5 organise le concours interne d'AAE."},
+  {t:"qcm", q:"Quelle académie est née d'une fusion en 2020 ?",
+   o:["Hauts-de-France","Normandie","Grand Est","Occitanie"], a:1,
+   e:"Caen et Rouen ont fusionné. Les autres régions ont gardé plusieurs académies, comme les Hauts-de-France."},
+  {t:"gap", q:"Complétez le statut de l'EPLE.",
+   text:"L'EPLE est doté de la {{personnalité morale|tutelle communale|délégation préfectorale}} et de l'autonomie financière. Le chef d'établissement est à la fois {{représentant de l'État|élu de la collectivité|agent de la Région}} et organe exécutif du {{conseil d'administration|conseil d'école|CDEN}}. L'{{adjoint gestionnaire|agent comptable|IEN}}, souvent un attaché, gère le budget, la restauration et les agents.",
+   e:"Le sujet 2025 plaçait le candidat dans le poste de secrétaire général d'EPLE."},
+  {t:"class", q:"Rangez les universités des Hauts-de-France dans leur académie.",
+   cats:["Académie de Lille","Académie d'Amiens"],
+   items:[["Université de Lille",0],["Université d'Artois",0],["Université du Littoral Côte d'Opale",0],["Université Polytechnique Hauts-de-France",0],["Université de Picardie Jules Verne",1],["Université de technologie de Compiègne",1]],
+   e:"Deux Crous en Hauts-de-France : Lille Nord–Pas-de-Calais et Amiens-Picardie."},
+  {t:"qcm", q:"Quelles sont les missions principales d'un Crous ?",
+   o:["Recruter les enseignants-chercheurs","Bourses, logement, restauration, aides d'urgence","Évaluer les formations","Organiser Parcoursup"], a:1,
+   e:"Les Crous sont des établissements publics régionaux animés par le Cnous."}
+  ]},
+
+{ id:"controle", title:"Évaluation, contrôle et dialogue social", desc:"IGÉSR, CEE, HCERES, CSA, CDEN : les instances que le jury juge mal connues.",
+  ex:[
+  {t:"match", q:"Reliez chaque instance à ce qu'elle fait.",
+   pairs:[["IGÉSR","Contrôle, évaluation et conseil auprès des ministres"],["Conseil d'évaluation de l'école (CEE)","Cadre d'évaluation des écoles et EPLE : autoévaluation puis évaluation externe"],["HCERES","Évaluation des universités, organismes de recherche et formations du supérieur"],["DEPP","Statistiques, évaluations des acquis, indicateurs de valeur ajoutée"],["CSEN","Éclairer les politiques par la recherche sur les apprentissages"],["Cour des comptes","Contrôle des comptes et de la gestion publique"],["Médiateur","Règlement amiable des litiges avec usagers et personnels"]],
+   e:"Le jury 2026 signale explicitement que le HCERES, le CEE et l'IGÉSR ne sont pas connus des candidats."},
+  {t:"qcm", q:"Par quel texte le Conseil d'évaluation de l'école a-t-il été créé, et quel organisme remplace-t-il ?",
+   o:["Loi de refondation de 2013, remplace l'IGEN","Loi « pour une école de la confiance » de 2019, remplace le Cnesco","Décret de 2020, remplace la DEPP","Loi NOTRe de 2015, remplace le CDEN"], a:1,
+   e:"Loi du 26 juillet 2019. Les établissements sont évalués selon un cycle d'environ cinq ans."},
+  {t:"qcm", q:"L'IGÉSR, créée en 2019, résulte de la fusion de combien d'inspections générales ?",
+   o:["Deux","Trois","Quatre","Six"], a:2,
+   e:"Éducation nationale ; administration de l'éducation nationale et de la recherche ; jeunesse et sports ; bibliothèques. Le président du jury AAE 2026 est un inspecteur général."},
+  {t:"qcm", q:"À quel organisme le HCERES a-t-il succédé ?",
+   o:["L'AERES","Le Cnesco","Le CNE","L'IGAENR"], a:0, e:"Le HCERES a succédé à l'AERES en 2014."},
+  {t:"class", q:"Dialogue social ou concertation avec les usagers et les collectivités ?",
+   cats:["Dialogue social (personnels)","Concertation (usagers, collectivités)"],
+   items:[["Comité social d'administration (CSA)",0],["Formation spécialisée F3SCT",0],["Commission administrative paritaire (CAP)",0],["Commission consultative paritaire (contractuels)",0],["Conseil supérieur de l'éducation",1],["CAEN (conseil académique)",1],["CDEN (conseil départemental)",1],["Conseil d'école",1]],
+   e:"Citer le CSA et le CDEN dans une partie 2 est un réflexe que peu de copies ont."},
+  {t:"gap", q:"Complétez.",
+   text:"Les comités sociaux d'administration existent {{depuis 2023|depuis 2010|depuis 1995}}. Leur formation spécialisée en santé, sécurité et conditions de travail s'appelle la {{F3SCT|CHSCT|CTSD}}. Au niveau départemental, la carte scolaire est présentée au {{CSA spécial départemental|CAEN|conseil d'école}} et au {{CDEN|Conseil supérieur de l'éducation|HCERES}}.",
+   e:"Le calendrier de la carte scolaire (concertation à l'automne, instances en début d'année civile) est un bon marqueur d'opérationnalité."},
+  {t:"vf", q:"Les dossiers RAEP sont notés par le jury.", a:false,
+   e:"Faux. Le dossier RAEP n'est pas noté, mais il sert de base à l'entretien et son absence élimine le candidat."}
+  ]},
+
+{ id:"politiques", title:"Politiques publiques", desc:"Chiffres, dates et mesures des onze fiches.",
+  ex:[
+  {t:"gap", q:"Collèges en progrès : complétez.",
+   text:"La démarche concerne {{756|1 200|300}} collèges publics. Ils sont identifiés parce qu'au moins {{4 élèves sur 10|1 élève sur 10|6 élèves sur 10}} y obtiennent moins de {{8/20|10/20|5/20}} en français et en mathématiques au brevet. Les équipes disposent de {{deux journées|une semaine|une heure}} ou quatre demi-journées pour préparer la démarche. Le pilote académique est le {{recteur|président de Région|préfet}}.",
+   e:"Instruction du 17 décembre 2025, BO spécial n° 2 du 25 août 2026."},
+  {t:"qcm", q:"Réforme de la formation initiale : à quel niveau se passe désormais le concours de professeur ?",
+   o:["Bac","Fin de licence (bac+3), dès la session 2026","Fin de master 1","Fin de master 2 uniquement"], a:1,
+   e:"Le concours à bac+5 est maintenu en 2026 et 2027 pour la transition. Les lauréats suivent un master M2E en deux ans, rémunéré."},
+  {t:"qcm", q:"Quelle licence ouvre à la rentrée 2026 pour préparer au professorat des écoles ?",
+   o:["La licence MEEF","La licence professorat des écoles (LPE)","La licence d'éducation civique","Le master M2E"], a:1,
+   e:"La circulaire de rentrée 2026 fait de la consolidation de cette réforme une priorité."},
+  {t:"gap", q:"Démographie scolaire : complétez.",
+   text:"Selon la DEPP (avril 2026), les effectifs baisseraient de {{1,68 million|500 000|3 millions}} d'élèves entre 2025 et 2035, soit {{−14,2 %|−5 %|−30 %}}. La baisse est plus forte dans le {{premier degré|second degré|supérieur}}. À la rentrée 2026, on compte environ {{161 000|16 000|1,6 million}} élèves de moins. Une direction de la politique territoriale de l'école et de l'anticipation doit être créée au plus tard le {{1er novembre 2026|1er janvier 2026|1er septembre 2027}}.",
+   e:"L'académie de Paris perdrait près de 30 % de ses effectifs en dix ans."},
+  {t:"qcm", q:"Quelles sont les deux priorités pédagogiques « absolues » de la circulaire de rentrée 2026 ?",
+   o:["Le numérique et l'IA","La maîtrise du langage et le raisonnement scientifique","Les langues vivantes et le sport","L'orientation et l'apprentissage"], a:1,
+   e:"Plus une nécessité éducative : climat scolaire et protection des élèves et des personnels."},
+  {t:"vf", q:"La circulaire de rentrée 2026 annonce plusieurs nouvelles réformes structurelles.", a:false,
+   e:"Faux. Elle annonce une rentrée de consolidation, sans nouvelle réforme structurelle."},
+  {t:"order", q:"Remettez dans l'ordre les quatre axes de la feuille de route de rentrée 2026 présentée par le ministre.",
+   items:["Instruire","Protéger","Unir","Préparer l'avenir"], e:"Formule de la conférence de presse de rentrée et du Conseil des ministres du 31 août 2026."},
+  {t:"gap", q:"Plan Avenir (sujet 2026) : complétez.",
+   text:"Annoncé le {{5 juin 2025|4 mai 2023|7 mai 2026}}, il repose sur trois principes : égalité et équité ; émancipation et {{responsabilité|compétition|excellence}} ; accompagnement au long cours et droit à {{l'erreur|la différence|l'oubli}}. Dès la {{5e|2de|terminale}}, quatre demi-journées annuelles sont consacrées à la découverte des métiers, avec la plateforme Avenir(s) de l'{{ONISEP|IGÉSR|DEPP}}.",
+   e:"Le projet d'accompagnement à l'orientation est adopté en conseil d'administration."},
+  {t:"qcm", q:"Territoires éducatifs ruraux (sujet 2025) : qui signe la convention tripartite ?",
+   o:["L'État, la Région et l'université","L'Éducation nationale, le Département et les communes","Le préfet, la CAF et l'ARS","Le collège, le lycée et l'école"], a:1,
+   e:"Convention de trois ans. 201 TER en juin 2024, cible de 300 à la rentrée 2026."},
+  {t:"qcm", q:"Réforme de la voie professionnelle (sujet 2024) : quelle mesure crée une allocation pour les lycéens ?",
+   o:["Le décret du 11 août 2023, pour les périodes de formation en milieu professionnel","La loi NOTRe","La circulaire de rentrée 2026","Le plan France ruralités"], a:0,
+   e:"S'y ajoutent le bureau des entreprises et la réorganisation de l'année de terminale."},
+  {t:"gap", q:"Réforme territoriale (sujet 2021) : complétez.",
+   text:"Le décret du {{20 novembre 2019|5 juin 2025|11 août 2023}} crée les régions académiques, en vigueur le {{1er janvier 2020|1er septembre 2019|1er janvier 2016}}. Il fait suite à la loi {{NOTRe|Avenir professionnel|école de la confiance}} de 2015, qui a créé 13 régions métropolitaines. La jeunesse et les sports rejoignent le ministère en {{2021|2015|2026}}.",
+   e:"Seule la Normandie a vu ses deux académies fusionner."},
+  {t:"match", q:"Reliez chaque mesure à sa politique.",
+   pairs:[["Bureau des entreprises dans chaque lycée professionnel","Réforme de la voie professionnelle"],["Convention tripartite de trois ans","Territoires éducatifs ruraux"],["Projet d'accompagnement à l'orientation adopté en CA","Plan Avenir"],["Master M2E rémunéré","Formation initiale des enseignants"],["Indicateurs de valeur ajoutée des collèges (IVAC)","Collèges en progrès"],["Classes à horaires aménagés en mathématiques et sciences","Plan Filles et maths"],["Pôles d'appui à la scolarité","École inclusive"],["Programme pHARe","Climat scolaire et protection"]],
+   e:"Associer une mesure phare à chaque politique permet de lire le dossier plus vite."},
+  {t:"class", q:"Plan Avenir : rangez chaque élément dans la bonne rubrique de la fiche.",
+   cats:["Constat","Objectif","Mesure","Acteur"],
+   items:[["Orientation marquée par les déterminismes sociaux, territoriaux et de genre",0],["Découverte des métiers insuffisante et inégale",0],["Réduire les inégalités de parcours",1],["Atteindre les cibles du plan Filles et maths",1],["Professeur référent orientation-découverte des métiers",2],["Module Mon Projet Sup dès la seconde",2],["DRAIO",3],["Région (information sur les métiers)",3]],
+   e:"Les quatre rubriques des fiches : constat, objectifs, mesures, acteurs."},
+  {t:"qcm", q:"Plan Filles et maths : quelle proportion de filles dans les filières de la production en lycée professionnel, selon la circulaire 2026 ?",
+   o:["Moins de 20 %","Environ 40 %","Environ 50 %","Plus de 60 %"], a:0,
+   e:"Environ 300 classes à horaires aménagés en mathématiques et sciences sont annoncées pour 2026."},
+  {t:"qcm", q:"Quelle mesure de climat scolaire entre en vigueur au lycée à la rentrée 2026 ?",
+   o:["L'uniforme obligatoire","L'interdiction du téléphone portable","La suppression des conseils de discipline","Le contrôle continu intégral"], a:1,
+   e:"Pour la première fois, les élèves devraient effectuer une scolarité complète sans téléphone."}
+  ]},
+
+{ id:"concours", title:"Le concours", desc:"Calendrier, épreuves, barème, minutage, schéma des sujets 2024-2026.",
+  ex:[
+  {t:"qcm", q:"Quelle est la date de l'écrit d'admissibilité de la session 2027 ?", o:["25 novembre 2026","10 janvier 2027","12 février 2027","6 avril 2027"], a:2,
+   e:"Arrêté du 18 septembre 2026 publié au JO du 27 septembre 2026."},
+  {t:"match", q:"Reliez chaque échéance à sa date.",
+   pairs:[["Ouverture des inscriptions","1er octobre 2026, 12 h"],["Clôture des inscriptions","25 novembre 2026, 12 h"],["Certificat médical pour aménagement","10 janvier 2027"],["Écrit d'admissibilité","12 février 2027"],["Dossier RAEP des admissibles","6 avril 2027"]],
+   e:"Un dossier RAEP absent, tardif ou non conforme au modèle entraîne l'élimination."},
+  {t:"gap", q:"Complétez la description des épreuves.",
+   text:"L'écrit dure {{4 heures|3 heures|5 heures}}, coefficient {{3|2|4}}, sur un dossier de {{30|50|15}} pages au plus. L'oral dure {{30 minutes|45 minutes|20 minutes}}, dont {{5 minutes|10 minutes|15 minutes}} de présentation au plus, coefficient {{4|3|2}}. Toute note inférieure à {{8/20|5/20|10/20}} est éliminatoire.",
+   e:"L'oral pèse plus que l'écrit dans le classement final."},
+  {t:"gap", q:"Complétez le barème de l'écrit (rapport 2026).",
+   text:"Forme : {{4,5|6|2}} points. Analyse et synthèse : {{6|4,5|8}} points. Propositions opérationnelles : {{5,5|3|7}} points. Annexes : {{2|1|4}} points chacune. Bonus : {{1|2|0,5}} point.",
+   e:"Propositions et annexes valent ensemble 9,5 points sur 20."},
+  {t:"order", q:"Remettez dans l'ordre les phases du minutage conseillé sur 4 heures.",
+   items:["Lecture du sujet et du dossier (50 min)","Plan détaillé et grille au brouillon (20 min)","Timbre, introduction, partie 1 (45 min)","Partie 2 (70 min)","Les deux annexes (40 min)","Relecture (15 min)"],
+   e:"Début 9 h : partie 1 terminée à 10 h 55, partie 2 à 12 h 05, annexes à 12 h 45."},
+  {t:"match", q:"Reliez chaque session au sujet tombé.",
+   pairs:[["2021","Réforme territoriale de l'Éducation nationale"],["2024","Réforme des lycées professionnels"],["2025","Territoires éducatifs ruraux"],["2026","Plan Avenir"]], e:"Une politique annoncée 12 à 18 mois avant l'épreuve."},
+  {t:"match", q:"Reliez chaque session au poste occupé par le candidat dans le sujet.",
+   pairs:[["2024","Chargé(e) de mission au secrétariat général du rectorat"],["2025","Secrétaire général d'EPLE dans un collège rural"],["2026","Agent de la DRAIO d'une région académique à une académie"]],
+   e:"Rectorat, EPLE, région académique : un sujet en DSDEN ou dans le supérieur serait cohérent avec cette rotation."},
+  {t:"qcm", q:"Quel document du dossier lire en premier pour la partie 2 ?", o:["La circulaire de rentrée","Le document critique (presse, syndicat, Parlement)","Le texte le plus long","Le dernier document"], a:1,
+   e:"Communiqué intersyndical en 2024, article sur un « bilan mitigé » en 2025, mission flash de l'Assemblée en 2026 : ils fournissent les risques."},
+  {t:"qcm", q:"Quel était le seuil d'admissibilité en 2026 ?", o:["10","11,5","13,13","14,75"], a:1,
+   e:"12,13 en 2024, 13,13 en 2025, 11,5 en 2026 : viser 13 à l'entraînement."},
+  {t:"vf", q:"En 2026, 40 % des candidats présents ont eu une note éliminatoire à l'écrit.", a:true,
+   e:"Vrai : 1 388 candidats sur 3 435 présents."}
+  ]},
+
+{ id:"copies", title:"Les meilleures copies", desc:"Timbre, introduction, pièges : ce qui sépare les admissibles des autres.",
+  ex:[
+  {t:"order", q:"Remettez dans l'ordre les éléments du timbre d'une note, tels que les placent les meilleures copies.",
+   items:["Service émetteur (région académique, rectorat, délégation)","Lieu et date","Affaire suivie par : Prénom NOM, téléphone, courriel","Note à l'attention de [fonction du destinataire]","Objet","Références (deux ou trois textes)","Liste des annexes"],
+   e:"Le jury 2026 relève de nombreuses mentions manquantes, signe selon lui d'une méconnaissance des usages administratifs."},
+  {t:"order", q:"Remettez dans l'ordre les étapes de l'introduction.",
+   items:["Accroche contextuelle (politique, date d'annonce, enjeu)","Rappel de la demande et de l'échéance","Annonce du plan en deux temps (I et II)","Mention des annexes jointes"], e:"10 à 12 lignes au plus, sans recopier le sujet."},
+  {t:"qcm", q:"Repérez l'erreur dans ce timbre : « Rectorat de l'académie XXX · DRAIO · Affaire suivie par : Sophie Martin · Note à l'attention du DRAIO · Objet : déploiement du Plan Avenir ».",
+   o:["Il manque la date","Un nom propre apparaît : rupture d'anonymat","Le destinataire est mal choisi","L'objet est trop long"], a:1,
+   e:"Il faut écrire « Prénom NOM » : tout nom est un signe distinctif. (La date manque aussi, mais l'anonymat est l'erreur grave.)"},
+  {t:"vf", q:"Le plan de la note doit reprendre les deux temps de la consigne, mot pour mot.", a:true, e:"Vrai. Les 7 meilleures copies l'ont fait. Un autre plan n'est pas pénalisé s'il traite tout, mais il n'apporte rien."},
+  {t:"vf", q:"Il faut lister toutes les pièces du dossier dans les références.", a:false, e:"Faux. Deux ou trois textes de référence (circulaire, note de service) suffisent."},
+  {t:"vf", q:"La partie 2 doit être au moins aussi développée que la partie 1.", a:true, e:"Vrai. C'est le bloc le plus lourd du barème, et le défaut le plus fréquent selon le jury."},
+  {t:"vf", q:"Une copie riche mais inachevée vaut mieux qu'une copie complète et synthétique.", a:false, e:"Faux. « Produire une note riche ne signifie pas paraphraser ; une note synthétique se doit d'être complète. »"},
+  {t:"qcm", q:"À quelle heure, au plus tard, terminer la partie 1 (début de l'épreuve à 9 h) ?", o:["10 h 10","10 h 55","11 h 30","12 h 05"], a:1,
+   e:"Si le retard dépasse 10 minutes à 10 h 55, couper la partie 1 et passer à la partie 2."},
+  {t:"match", q:"Reliez chaque faiblesse observée à la manière de faire mieux.",
+   pairs:[["Courrier intitulé « Note » et rédigé à la première personne","Forme de lettre stricte, rédaction impersonnelle"],["Risques diffus, sans sous-partie dédiée","Sous-partie « risques et parades », risques classés par famille"],["Partie 2 d'une page et demie","Partie 2 au moins aussi longue que la partie 1"],["Annexes numérotées différemment de l'annonce","Vérifier la numérotation à la relecture"],["Peu d'indicateurs de suivi","Un indicateur par axe, un bilan daté"]],
+   e:"Même les meilleures copies laissent des points : ce sont ceux à prendre."},
+  {t:"qcm", q:"Quel découpage de la partie 2 la copie 2 de 2026 propose-t-elle ?",
+   o:["Avant, pendant, après","Gouvernance, ressources humaines, moyens, communication, suivi et évaluation","Élèves, parents, enseignants","Court, moyen et long terme"], a:1,
+   e:"Cette grille par rubriques de gestion fonctionne quel que soit le sujet."}
+  ]},
+
+{ id:"themes", title:"Thèmes possibles en 2027", desc:"Pronostics, risques et parades, acteurs à ne pas oublier.",
+  ex:[
+  {t:"qcm", q:"Quels sont les deux thèmes jugés les plus probables pour 2027 ?",
+   o:["IA et vie étudiante","Collèges en progrès et démographie scolaire","Réforme territoriale et lycées professionnels","Plan Avenir et TER"], a:1,
+   e:"Deux politiques récentes, très territoriales, qui supposent une déclinaison locale : le format même du cas pratique."},
+  {t:"match", q:"Reliez chaque thème au poste vraisemblable du candidat.",
+   pairs:[["Collèges en progrès","Chargé(e) de mission auprès de l'IA-DASEN"],["Démographie et carte scolaire","Attaché(e) à la DSDEN, service de l'organisation scolaire"],["Formation initiale des enseignants","Attaché(e) à la DRH du rectorat"],["Téléphone portable au lycée","Secrétaire général d'un lycée"],["Intelligence artificielle","Chargé(e) de mission auprès de la DRANE"],["Vie étudiante","Attaché(e) dans un Crous ou une université"]],
+   e:"Se mettre à la place du destinataire : de quoi a-t-il besoin pour décider ?"},
+  {t:"match", q:"Reliez chaque risque à sa parade.",
+   pairs:[["Stigmatisation d'un collège en progrès","Communication centrée sur les progrès, réunion avec les parents"],["Hostilité des élus face à la carte scolaire","Concertation précoce, visibilité à trois ans, critères transparents"],["Terrains de stage insuffisants pour les lauréats","Recensement précoce, valorisation des tuteurs"],["Application inégale de l'interdiction du portable","Consignes écrites, formation de la vie scolaire"],["Pénurie d'AESH","Plan de recrutement, mutualisation raisonnée"],["Fuite de données avec un outil d'IA","Outils validés, registre des traitements"]],
+   e:"Une parade doit être une action concrète, pas une intention (« veiller à... »)."},
+  {t:"qcm", q:"Collèges en progrès : les stages de réussite pendant les vacances impliquent quel acteur souvent oublié ?",
+   o:["La Région","Le Département (transport, restauration des collégiens)","L'université","La CAF"], a:1, e:"Le Département a la charge des collèges."},
+  {t:"qcm", q:"Carte scolaire : quel est le calendrier réaliste ?",
+   o:["Tout se décide en juin","Concertation avec les maires à l'automne, CSA spécial départemental et CDEN en début d'année civile","Décision du ministre en septembre","Vote du conseil d'école en mars"], a:1,
+   e:"Dater les actions sur le calendrier réel de l'institution fait gagner des points d'opérationnalité."},
+  {t:"qcm", q:"Climat scolaire : quel article impose de signaler au procureur un crime ou un délit dont un fonctionnaire a connaissance ?",
+   o:["Article 40 du code de procédure pénale","Article 6 de la Déclaration des droits de l'homme","Article L. 111-1 du code de l'éducation","Article 72 de la Constitution"], a:0,
+   e:"À citer avec la protection fonctionnelle des agents."},
+  {t:"vf", q:"La modification du règlement intérieur d'un lycée doit être votée en conseil d'administration.", a:true,
+   e:"Vrai, après consultation du conseil des délégués pour la vie lycéenne."},
+  {t:"class", q:"Rangez chaque élément selon le thème 2027 qu'il servirait le mieux.",
+   cats:["Collèges en progrès","Démographie scolaire","Formation des enseignants"],
+   items:[["Indicateurs de valeur ajoutée des collèges",0],["Équipes ressources académiques pluridisciplinaires",0],["Projections départementales de la DEPP",1],["Regroupements pédagogiques intercommunaux",1],["Double flux de concours bac+3 et bac+5",2],["Convention rectorat-INSPÉ",2]],
+   e:"Ces détails précis font la différence avec les copies qui restent générales."}
+  ]}
+];
+
+/* ===================== MOTEUR ===================== */
+const app = document.getElementById("app");
+const store = {
+  get(k){ try{ const v = localStorage.getItem("aae27:"+k); return v ? JSON.parse(v) : null; }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem("aae27:"+k, JSON.stringify(v)); }catch(e){} }
+};
+const KIND = {qcm:"Choix unique", vf:"Vrai ou faux", order:"Remettre dans l'ordre", match:"Relier", gap:"Phrase à trous", class:"Classer"};
+const shuffle = a => { a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const el = (tag, attrs={}, html="") => { const e=document.createElement(tag); for(const k in attrs){ if(k==="class") e.className=attrs[k]; else e.setAttribute(k, attrs[k]); } if(html) e.innerHTML=html; return e; };
+
+let session = null;
+
+function home(){
+  session = null;
+  app.innerHTML = "";
+  app.append(el("p",{class:"intro"},"Choisissez une partie. Chaque exercice se valide, puis la correction s'affiche dans la marge, comme sur une copie."));
+  const ul = el("ul",{class:"toc"});
+  MODULES.forEach(m => {
+    const best = store.get("best:"+m.id);
+    const li = el("li");
+    const b = el("button",{type:"button"});
+    b.innerHTML = `<span class="tt">${esc(m.title)}</span><span class="sc ${best?"":"none"}">${best?best.s+"/"+best.n:"pas encore fait"}</span><span class="dd">${esc(m.desc)} ${m.ex.length} exercices.</span>`;
+    b.onclick = () => start(m.title, m.ex.map(x=>({...x, mod:m.title})), m.id);
+    li.append(b); ul.append(li);
+  });
+  app.append(ul);
+  app.focus?.();
+}
+
+function start(title, list, id){
+  session = {title, id, list, i:0, results:[]};
+  render();
+  window.scrollTo({top:0});
+}
+
+function mix(){
+  const all = MODULES.flatMap(m => m.ex.map(x=>({...x, mod:m.title})));
+  start("Révision mélangée", shuffle(all).slice(0,15), "mix");
+}
+
+function render(){
+  const s = session, ex = s.list[s.i];
+  app.innerHTML = "";
+  const bar = el("div",{class:"bar"});
+  bar.innerHTML = `<span class="crumb">${esc(s.title)} · exercice ${s.i+1} sur ${s.list.length}</span><span class="progress" aria-hidden="true"><span style="width:${(s.i/s.list.length)*100}%"></span></span>`;
+  app.append(bar);
+  app.append(el("span",{class:"kind"}, KIND[ex.t] + (s.id==="mix" ? " · "+esc(ex.mod) : "")));
+  app.append(el("p",{class:"q"}, esc(ex.q)));
+  const zone = el("div"); app.append(zone);
+  const acts = el("div",{class:"actions"});
+  const check = el("button",{class:"btn solid", type:"button"},"Vérifier");
+  const next = el("button",{class:"btn", type:"button"}, s.i < s.list.length-1 ? "Exercice suivant" : "Voir le bilan");
+  next.style.display = "none";
+  acts.append(check, next);
+  app.append(acts);
+  const fb = el("div"); app.append(fb);
+  const api = BUILD[ex.t](zone, ex);
+  check.onclick = () => {
+    const r = api.check();
+    if(r === null){ fb.innerHTML = `<p class="note">Il manque des réponses.</p>`; return; }
+    check.style.display = "none"; next.style.display = "";
+    s.results.push({q:ex.q, ok:r});
+    fb.innerHTML = `<p class="note ${r?"ok":""}">${r ? pick(["Très bien.","Exact.","Juste !","Parfait."]) : pick(["À revoir.","Pas tout à fait.","Attention."])}</p><p class="expl">${esc(ex.e||"")}</p>`;
+    next.focus();
+  };
+  next.onclick = () => { if(s.i < s.list.length-1){ s.i++; render(); window.scrollTo({top:0}); } else summary(); };
+}
+const pick = a => a[Math.floor(Math.random()*a.length)];
+
+function summary(){
+  const s = session, n = s.results.length, ok = s.results.filter(r=>r.ok).length;
+  if(s.id){ const prev = store.get("best:"+s.id); if(!prev || ok/n > prev.s/prev.n) store.set("best:"+s.id, {s:ok, n}); }
+  app.innerHTML = "";
+  app.append(el("p",{class:"crumb"}, esc(s.title)+" · bilan"));
+  app.append(el("p",{class:"score"}, `${ok}/${n}`));
+  const pct = ok/n;
+  app.append(el("p",{class:"q"}, pct>=0.85 ? "Acquis. Refaites-le dans une semaine pour ancrer." : pct>=0.6 ? "En bonne voie. Reprenez les exercices marqués d'une croix." : "À retravailler : relisez le PDF correspondant puis recommencez."));
+  const ul = el("ul",{class:"review"});
+  s.results.forEach(r => { const li = el("li"); li.innerHTML = `<span class="m ${r.ok?"ok":"ko"}">${r.ok?"✓":"✗"}</span><span>${esc(r.q)}</span>`; ul.append(li); });
+  app.append(ul);
+  const a = el("div",{class:"actions"});
+  const again = el("button",{class:"btn solid", type:"button"},"Recommencer");
+  again.onclick = () => s.id==="mix" ? mix() : start(s.title, shuffle(s.list), s.id);
+  const back = el("button",{class:"btn", type:"button"},"Retour au sommaire");
+  back.onclick = home;
+  a.append(again, back); app.append(a);
+}
+
+/* ---------- Types d'exercices ---------- */
+const BUILD = {
+  qcm(z, ex){
+    const box = el("div",{class:"opts", role:"radiogroup"}); let sel = null;
+    const base = ex.o.map((t,i)=>({t,i})); const order = ex._vf ? base : shuffle(base);
+    const btns = order.map(o => { const b = el("button",{class:"opt", type:"button", role:"radio", "aria-checked":"false"}, esc(o.t));
+      b.onclick = () => { if(box.dataset.done) return; btns.forEach(x=>{x.classList.remove("sel"); x.setAttribute("aria-checked","false");}); b.classList.add("sel"); b.setAttribute("aria-checked","true"); sel=o.i; };
+      b._i = o.i; box.append(b); return b; });
+    z.append(box);
+    return { check(){ if(sel===null) return null; box.dataset.done=1; btns.forEach(b=>{ if(b._i===ex.a) b.classList.add("good"); else if(b._i===sel) b.classList.add("bad"); }); return sel===ex.a; } };
+  },
+  vf(z, ex){
+    return BUILD.qcm(z, {...ex, o:["Vrai","Faux"], a: ex.a ? 0 : 1, _vf:true});
+  },
+  order(z, ex){
+    let cur = shuffle(ex.items.map((t,i)=>({t,i})));
+    if(cur.every((c,k)=>c.i===k) && cur.length>1) cur.reverse();
+    const ol = el("ol",{class:"order"});
+    let done = false;
+    const draw = () => {
+      ol.innerHTML = "";
+      cur.forEach((c,k) => {
+        const li = el("li");
+        li.innerHTML = `<span class="n">${k+1}.</span><span>${esc(c.t)}</span>`;
+        const mv = el("span",{class:"mv"});
+        const up = el("button",{type:"button","aria-label":"Monter : "+c.t},"▲");
+        const dn = el("button",{type:"button","aria-label":"Descendre : "+c.t},"▼");
+        up.disabled = k===0 || done; dn.disabled = k===cur.length-1 || done;
+        up.onclick = () => { [cur[k-1],cur[k]]=[cur[k],cur[k-1]]; draw(); ol.children[k-1].querySelector("button").focus(); };
+        dn.onclick = () => { [cur[k+1],cur[k]]=[cur[k],cur[k+1]]; draw(); ol.children[k+1].querySelectorAll("button")[1].focus(); };
+        mv.append(up,dn); li.append(mv);
+        if(done){ li.classList.add(c.i===k?"good":"bad"); if(c.i!==k) li.append(el("span",{class:"fix"},"Place attendue : "+(c.i+1))); }
+        ol.append(li);
+      });
+    };
+    draw(); z.append(el("p",{class:"hint"},"Utilisez les flèches pour déplacer les éléments.")); z.append(ol);
+    return { check(){ done = true; draw(); return cur.every((c,k)=>c.i===k); } };
+  },
+  match(z, ex){
+    z.append(el("p",{class:"hint"},"Touchez un élément à gauche, puis sa correspondance à droite. Touchez à nouveau pour défaire une paire."));
+    const wrap = el("div",{class:"match"}), L = el("div",{class:"col"}), R = el("div",{class:"col"});
+    const left = ex.pairs.map((p,i)=>({t:p[0], i})), right = shuffle(ex.pairs.map((p,i)=>({t:p[1], i})));
+    const pairs = {}; let active = null, done = false;
+    const lb = left.map(l => { const b = el("button",{class:"mi", type:"button"}); b._d=l; L.append(b); return b; });
+    const rb = right.map(r => { const b = el("button",{class:"mi", type:"button"}); b._d=r; R.append(b); return b; });
+    const label = n => String.fromCharCode(65+n);
+    const draw = () => {
+      lb.forEach((b,k) => { const p = pairs[b._d.i]; b.className = "mi"+(p!==undefined?" paired":"")+(active===b._d.i?" active":""); b.innerHTML = `<span class="tag">${label(k)}</span>${esc(b._d.t)}`;
+        if(done) b.classList.add(pairs[b._d.i]===b._d.i?"good":"bad"); });
+      rb.forEach(b => { const owner = Object.keys(pairs).find(k=>pairs[k]===b._d.i); const k = owner!==undefined ? left.findIndex(l=>l.i==owner) : -1;
+        b.className = "mi"+(k>=0?" paired":""); b.innerHTML = `<span class="tag">${k>=0?label(k):"·"}</span>${esc(b._d.t)}`;
+        if(done){ b.classList.add(owner!==undefined && +owner===b._d.i ? "good":"bad"); if(!(owner!==undefined && +owner===b._d.i)){ const kk = left.findIndex(l=>l.i===b._d.i); b.innerHTML += `<span style="display:block;font-size:.82rem;color:var(--red)">Va avec ${label(kk)}</span>`; } } });
+    };
+    lb.forEach(b => b.onclick = () => { if(done) return; if(pairs[b._d.i]!==undefined && active!==b._d.i){ delete pairs[b._d.i]; active=null; } else active = active===b._d.i ? null : b._d.i; draw(); });
+    rb.forEach(b => b.onclick = () => { if(done) return; const owner = Object.keys(pairs).find(k=>pairs[k]===b._d.i);
+      if(active===null){ if(owner!==undefined){ delete pairs[owner]; draw(); } return; }
+      if(owner!==undefined) delete pairs[owner]; pairs[active] = b._d.i; active = null; draw(); });
+    draw(); wrap.append(L,R); z.append(wrap);
+    return { check(){ if(Object.keys(pairs).length < left.length) return null; done = true; draw(); return left.every(l=>pairs[l.i]===l.i); } };
+  },
+  gap(z, ex){
+    const p = el("div",{class:"gap"}); const sels = [];
+    const parts = ex.text.split(/(\{\{[^}]+\}\})/);
+    parts.forEach(part => {
+      const m = part.match(/^\{\{(.+)\}\}$/);
+      if(!m){ p.append(document.createTextNode(part)); return; }
+      const opts = m[1].split("|"); const s = el("select",{"aria-label":"Choisir le mot manquant"});
+      s.append(el("option",{value:""},"……"));
+      shuffle(opts).forEach(o => { const op = el("option",{value:o}); op.textContent = o; s.append(op); });
+      s._a = opts[0]; sels.push(s); p.append(s);
+    });
+    z.append(p);
+    return { check(){ if(sels.some(s=>!s.value)) return null; let ok = true;
+      sels.forEach(s => { s.disabled = true; if(s.value===s._a) s.classList.add("good"); else { ok=false; s.classList.add("bad"); const c = el("span",{class:"corr"}, esc(s._a)); s.after(c); } });
+      return ok; } };
+  },
+  class(z, ex){
+    const box = el("div",{class:"cls"}); const rows = [];
+    shuffle(ex.items).forEach(([t,c]) => {
+      const r = el("div",{class:"ci"}); r.append(el("span",{},esc(t)));
+      const s = el("select",{"aria-label":"Catégorie pour : "+t}); s.append(el("option",{value:""},"Choisir…"));
+      ex.cats.forEach((cat,k) => { const o = el("option",{value:k}); o.textContent = cat; s.append(o); });
+      r.append(s); rows.push({r,s,c}); box.append(r);
+    });
+    z.append(box);
+    return { check(){ if(rows.some(x=>x.s.value==="")) return null; let ok = true;
+      rows.forEach(x => { x.s.disabled = true; if(+x.s.value===x.c) x.r.classList.add("good"); else { ok=false; x.r.classList.add("bad"); x.r.append(el("span",{class:"fix"},"Réponse : "+ex.cats[x.c])); } });
+      return ok; } };
+  }
+};
+
+document.getElementById("homeBtn").onclick = home;
+document.getElementById("mixBtn").onclick = mix;
+home();
+</script>
+</body>
+</html>
